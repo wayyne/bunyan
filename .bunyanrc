@@ -3,5 +3,20 @@ export HISTFILESIZE=100000               # big big history
 shopt -s histappend                      # append to history, do not overwrite
 export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 mkdir -p ${HOME}/logs
-HISTFILE=${HOME}/logs/$(date +"%m.%d.%y").log
-echo "Bunyan logging is active."
+
+#determine if we're inside a screen, i.e., tmux screen or gnu screen
+if [ "${TMUX_PANE}" == "" ]; then 
+  #we're inside an active tmux screen
+  screenID=${TMUX_PANE}
+  HISTFILE=${HOME}/logs/$(date +"%m.%d.%y")-${screenID}\.log
+  echo "Bunyan logging is active for this non-login shell: ${HISFILE}."
+elif [ "${STY}" == "" ]; then
+  #we're inside an active gnu screen
+  screenID=$(echo ${STY} | cut -d '.' -f 1,2)
+  HISTFILE=${HOME}/logs/$(date +"%m.%d.%y")-${screenID}\.log
+  echo "Bunyan logging is active for this non-login shell: ${HISFILE}."
+else
+  #we're not inside a tmux or gnu screen
+  HISTFILE=${HOME}/logs/$(date +"%m.%d.%y").log
+  echo "Bunyan logging is active for this login shell: ${HISFILE}."
+fi
