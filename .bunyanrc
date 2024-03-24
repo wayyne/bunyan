@@ -1,0 +1,7 @@
+export HISTSIZE=100000                   # big big history
+export HISTFILESIZE=100000               # big big history
+shopt -s histappend                      # append to history, do not overwrite
+export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+mkdir -p ${HOME}/logs
+HISTFILE=${HOME}/logs/$(date +"%m.%d.%y").log
+echo "Bunyan logging is active."
